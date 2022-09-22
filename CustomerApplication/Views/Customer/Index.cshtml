@@ -1,0 +1,225 @@
+﻿@model IEnumerable<CustomerApplication.DB.tblCustomer>
+
+<div class="top-buffer"></div>
+<div class="panel panel-primary">
+    <div class="panel-heading panel-head">Customers</div>
+    <div class="panel-body">
+        <div class="btn-group">
+            <a id="createEditStudentModal" data-bs-toggle="modal" data-bs-target="#Modal" aria-expanded="false" class="btn btn-primary">
+                <i class="glyphicon glyphicon-plus"></i>  Add Customer
+            </a >
+            <a class="btn btn-primary" asp-controller="Customertype" asp-action="index">
+                <i class="glyphicon glyphicon-plus"></i>  Customer Types List
+            </a>
+        </div>
+        <br />
+        <div class="top-buffer"></div>
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                        <td>@Html.DisplayFor(modelItem => item.State)</td>
+                        <td>@Html.DisplayFor(modelItem => item.City)</td>
+                        <td>
+                            <a id="editStudentModal" data-bs-toggle="modal" data-bs-target="#EditModal" aria-expanded="false"
+                           class="btn btn-info" href="javascript: void(0);" onclick="openEditModal(@item.Id,'@item.Name','@item.Description','@item.Address','@item.State','@item.City','@item.Zip',@item.CustomerTypeId)">
+                                <i class="glyphicon glyphicon-pencil"></i>  Edit
+                            </a>
+                            <a id="deleteStudentModal" href="javascript: void(0);" onclick="window.location.href = '../Customer/DeleteCustomer?id='+@item.Id" class="btn btn-danger">
+                                <i class="glyphicon glyphicon-trash"></i>  Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="Modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="width:500px; margin-left:400px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Add Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label>Name <code>*</code></label>
+                            <input  id="name" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Description <code>*</code></label>
+                            <input  id="desc" class="form-control" />
+                        </div>
+                         <div class="form-group">
+                            <label>Address <code>*</code></label>
+                            <input  id="address" class="form-control" />
+                        </div>
+                         <div class="form-group">
+                            <label>City <code>*</code></label>
+                            <input  id="city" class="form-control" />
+                        </div>
+                         <div class="form-group">
+                            <label>State <code>*</code></label>
+                            <input  id="state" class="form-control" />
+                        </div>
+                         <div class="form-group">
+                            <label>Zip <code>*</code></label>
+                            <input  id="zip" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Select Customer Type <code>*</code></label>
+                            <select id="customertype" asp-items="@ViewBag.CustomerTypes" class="form-control">
+                                <option selected disabled value="0">--Select CustomerType--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" id="btn_Save" onclick="Save()"><i class="spinner-border spinner-border-sm d-none"></i>Save </button>
+            </div>
+        </div>
+        </div>
+</div>
+<div id="EditModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="width:500px; margin-left:400px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <input id="id" class="form-control" hidden/>
+                            <label>Name <code>*</code></label>
+                            <input id="ename" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Description <code>*</code></label>
+                            <input id="edesc" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Address <code>*</code></label>
+                            <input id="eaddress" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>City <code>*</code></label>
+                            <input id="ecity" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>State <code>*</code></label>
+                            <input id="estate" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Zip <code>*</code></label>
+                            <input id="ezip" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Select Customer Type <code>*</code></label>
+                            <select id="ecustomertype" asp-items="@ViewBag.CustomerTypes" class="form-control">
+                                <option selected disabled value="0">--Select CustomerType--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" id="btn_edit" onclick="Update()"><i class="spinner-border spinner-border-sm d-none"></i>Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+  <script>
+    function Save() {
+        var Data = {};
+        Data.Id = 0;
+        Data.Name = $("#name").val();
+        Data.Description = $("#desc").val();
+        Data.CustomerTypeId = $("#customertype").val();
+        Data.Address = $("#address").val();
+        Data.City = $("#city").val();
+        Data.State = $("#state").val();
+        Data.Zip = $("#zip").val();
+        $('#btn_Save').prop('disabled', true);
+        $('#btn_Save i').removeClass('d-none');
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Customer/AddEditCustomer",
+            data: Data,
+            success: function (response) {
+                $('#Modal').modal('hide');
+                window.location.reload();
+            },
+            error: function (req, status, err) {
+                $('#btn_Save').prop('disabled', false);
+                $('#btn_Save i').addClass('d-none');
+            }
+        });
+    }
+
+
+      function openEditModal(ID, name,desc,add,city,state,zip,ct) {
+        $("#id").val(ID);
+         $("#ename").val(name);
+        $("#edesc").val(desc);
+        $("#eaddress").val(add);
+        $("#ecity").val(city);
+        $("#estate").val(state);
+        $("#ezip").val(zip);
+        $("#ecustomertype").val(ct);
+        debugger;
+        $('#EditModal').modal('show');
+    }
+
+    function Update() {
+        var Data = {};
+        Data.Id = $("#id").val();
+        Data.Name = $("#ename").val();
+        Data.Description = $("#edesc").val();
+        Data.CustomerTypeId = $("#ecustomertype").val();
+        Data.Address = $("#eaddress").val();
+        Data.City = $("#ecity").val();
+        Data.State = $("#estate").val();
+        Data.Zip = $("#ezip").val();
+        $('#btn_edit').prop('disabled', true);
+        $('#btn_edit i').removeClass('d-none');
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Customer/AddEditCustomer",
+            data: Data,
+            success: function (response) {
+                $('#EditModal').modal('hide');
+                window.location.reload();
+            },
+            error: function (req, status, err) {
+                $('#btn_edit').prop('disabled', false);
+                $('#btn_edit i').addClass('d-none');
+            }
+        });
+    }
+
+  </script>
